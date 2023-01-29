@@ -1,0 +1,56 @@
+1. installing react in the current folder
+-> npx create-react-app .
+
+2. installing tailwindcss (it is a dev tool)
+-> npm i -D tailwindcss postcss-cli autoprefixer
+
+3. tailwindcss config file 
+-> npx tailwind init tailwind.js -- full
+
+4. postcss for tailwind
+-> create postcss.config.js 
+write ->
+--------------------------------------------------
+const tailwindcss = require('tailwindcss');
+
+module.exports = {
+    plugin: [
+        tailwindcss('./tailwind.js'),
+        require('autoprefixer')
+    ]
+}
+--------------------------------------------------
+
+5. create assests in src folder
+tailwind.css (input)
+Add ->
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+main.css (output file)
+
+6. watch and build in package.json
+
+--------------------------------------------------
+"scripts": {
+    "start": "npm run watch:css && react-scripts start",
+    "build": "npm run build:css && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
+    "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css"
+  },
+--------------------------------------------------
+
+7. start 
+-> npm start
+
+8. can delete files
+-> app.css, app.test.js, index.css, logo.svg, 
+reportWebVitals.js, reportWebVitals.js
+
+9. include css in index.js
+-> add 
+import './assets/main.css';
