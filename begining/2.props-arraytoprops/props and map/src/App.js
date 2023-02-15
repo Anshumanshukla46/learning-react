@@ -7,6 +7,41 @@ import data from './Components/data';
 
 export default function App() {
 
+  /**
+   * Challenge: Map over the thingsArray to generate
+   * a <p> element for each item and render them on the page
+   * below the button.
+   
+    "MAP"
+
+  const thingsArray = ["Thing 1", "Thing 2"]
+
+// with css(but type of javascript as document.getElementById('something').style.backgroundColor = "red")
+// this is an object
+const style = {
+  backgroundColor:"black"
+}
+
+  const a = thingsArray.map(i => {
+    return (
+      // first curly to come from jsx to js, and next curly braces to add the object of js
+
+      <p style={style} className="para" > {i} </p> //=> {i} is very important
+    )
+  })
+
+  now just use this as in render-
+
+    return (
+      <div>
+        {a} 
+      </div>
+    ) 
+
+    // else if you have Components the use some stuff to add
+
+*/
+
   const cards = data.map(item => {
     return (
       /**
