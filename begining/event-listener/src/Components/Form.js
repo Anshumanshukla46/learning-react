@@ -1,5 +1,4 @@
 import React from "react";
-import memeData from "../memesData";
 
 /*
     Props are the data passed between the Components and we shouldn't change the data
@@ -27,7 +26,7 @@ import memeData from "../memesData";
     STATE ARE MUTABLE(can change).
 
     importing State in React =>
-                2 ways to use this (both are same)
+        2 ways to use this (both are same)
     1. React.useState (AnyValue)
     2. import React, {useState} from "react";
 
@@ -73,6 +72,12 @@ import memeData from "../memesData";
     function add() {
         setCount(function (oldval){
             return oldval+1;
+        })
+
+        "OR"
+
+        set(old =>{
+            return [value] // any type
         })
     }
 
@@ -125,11 +130,12 @@ Example2. TO TAKE OBJECT AS INITIALISER
             })
         }
 
-// USING THIS WE CAN PASS VALUE TO THE function passed using "Props" => works at receiving end
-        onClick={()=>props.toggle(props.id)}
+// USING THIS WE CAN PASS VALUE TO THE function passed using "Props" => 
+    works at receiving end
+    onClick={()=>props.toggle(props.id)}
 
 // work at passing end
-        toggle={() => toggle(square.id)}
+    toggle={() => toggle(square.id)}
 
 prevSquares = [
     {
@@ -162,13 +168,14 @@ export default function Form() {
 
     // This is the state variable
 
-    const [allMemeImages, setAllMemeImages] = React.useState(memeData);
+    const [allMemeImages, setAllMemeImages] = React.useState([]); // empty
 
     const [meme, setMeme] = React.useState({
         topText: "",
         bottomText: "",
         randomImage: "http://i.imgflip.com/1bij.jpg"
     });
+
 
     function getMemeImage() {
         // Getting random image from memeData file.
@@ -183,6 +190,30 @@ export default function Form() {
         }));
     }
 
+
+
+    function handleChange(event) {
+        const { name, value } = event.target
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            [name]: value
+        }))
+    }
+
+
+    React.useEffect(() => {
+        async function getMemes() {
+            const res = await fetch("https://api.imgflip.com/get_memes")
+            const memeData = await res.json()
+            setAllMemeImages(memeData)
+        }
+
+        getMemes();
+
+    }, [])
+
+
+
     return (
 
         <main className="p-9">
@@ -192,54 +223,51 @@ export default function Form() {
 
                 {/* FORM - 
 
-<input type="text" onChange={toggle} /> 
+                <input type="text" onChange={toggle} /> 
 
-// by default every "onChange" function will take "event" as input
+                // by default every "onChange" function will take "event" as input
 
-function toggle(event){
-    console.log(event) // return event
-    console.log(event.target) // return whole "input field"
+                function toggle(event){
+                    console.log(event)         // return event
+                    console.log(event.target) // return whole "input field"
 
-    console.log(event.target.value) // return whole "entered value"
-    console.log(event.target.name) // return descibed parameter
+                    console.log(event.target.value) // return whole "entered value"
+                    console.log(event.target.name) // return descibed parameter
 
-}
+                }
 
 
             <input
                 type="text"
                 placeholder="First Name"
                 onChange={handleChange}
-                name="firstName" 
+                name="firstName"
             
-                // name => should be same as in state
+                // name => should be same as in state with "INITIALISER as OBJECT"
 
-                value={formData.firstName}  // should be same as in state 
-                // this will be controlled components now react will handle it more peacefully
+                value = {formData.firstName}  // should be same as in state 
+
+                // this will be controlled component's now react will handle it more peacefully
             /> 
 
-            <input
-                type="text"
-                placeholder="Last Name"
-                onChange={handleChange}
-                name="lastName"
-                value={formData.lastName}
-            />
-
 ========================>
-// it is self-closing in react -> not like as in html => <textarea> This is html <textarea/>
-1.      <textarea   placeholder="Enter comments"  /> // rest properties are same 
+// it is self-closing in react -> 
+        not like as in html => <textarea> This is html <textarea/>
+1.      <textarea   placeholder="Enter comments"  /> // rest properties are same type="text"
 
 
 2.      <label htmlFor="isChecked"> Are you isChecked? </label>
 
+// NO VALUE
+
             <input 
                 type="checkbox"
                 id="isChecked"
-                checked={formData.isChecked}
+                checked={formData.isChecked} // either checked or not
                 onChange={handleChange}
-                name={isChecked}
+                name={isChecked}            // but type="text" do have the name as "isChecked"
             />
+
 
 3. RADIO BUTTON => 
     1. HERE NAME OF ALL RADIO BUTTON SHOULD BE SAME.
@@ -251,7 +279,7 @@ function toggle(event){
                 <input 
                     type="radio"
                     id="unemployed"
-                    name="employment"
+                    name="employment" // string
                     value="unemployed"
                     checked={formData.employment === "unemployed"}
                     onChange={handleChange}
@@ -278,10 +306,10 @@ function toggle(event){
         onChange={handleChange}
     >
 
-    <option value="">-- choose--</option> // this will be choosen
-    <option value="red">red</option>
-    <option value="yellow">yellow</option>
-    <option value="blue">blue</option>
+        <option value="">-- choose--</option> // this will be choosen
+        <option value="red">red</option>
+        <option value="yellow">yellow</option>
+        <option value="blue">blue</option>
 
     </select>
 
@@ -331,22 +359,36 @@ function handleSubmit(event){
                     type="text"
                     placeholder="Top text"
                     className="form--input"
+                    name="topText"
+                    value={meme.topText}
+                    onChange={handleChange}
                 />
+
 
                 <input
                     type="text"
                     placeholder="Bottom text"
                     className="form--input"
+                    name="bottomText"
+                    value={meme.bottomText}
+                    onChange={handleChange}
                 />
+
 
                 <button
                     className="form--button hover:opacity-80"
                     onClick={getMemeImage}
                 >
-                    Get a new meme image 🎍
+                    Get a new meme image 🖼
                 </button>
 
-                <img src={meme.randomImage} className="max-w-md" />
+
+                <div className="meme">
+                    <img src={meme.randomImage} className="meme--image" />
+
+                    <h2 className="meme--text top">{meme.topText}</h2>
+                    <h2 className="meme--text bottom">{meme.bottomText}</h2>
+                </div>
 
             </div>
 
